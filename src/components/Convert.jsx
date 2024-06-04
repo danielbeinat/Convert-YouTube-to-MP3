@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import background from "../assets/background.png";
+import background2 from "../assets/background2.png";
 const { VITE_APP_RAPIDAPI_KEY } = import.meta.env;
 
 export const Convert = () => {
@@ -58,7 +58,7 @@ export const Convert = () => {
     <div className="relative font-poppins h-screen flex flex-col items-center justify-center">
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${background})` }}
+        style={{ backgroundImage: `url(${background2})` }}
       >
         <div className="absolute inset-0 bg-black opacity-80"></div>
       </div>
@@ -125,7 +125,7 @@ export const Convert = () => {
               <input
                 placeholder="Ingresa la URL del video de YouTube"
                 type="text"
-                className="text-black md:font-medium text-[13px] w-full h-[55px] md:h-full rounded-t md:rounded-l md:rounded-tr-none px-5 outline-none"
+                className="text-black md:font-medium text-[13px] md:text-[16px]  w-full h-[55px] md:h-full rounded-t md:rounded-l md:rounded-tr-none px-5 outline-none"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
