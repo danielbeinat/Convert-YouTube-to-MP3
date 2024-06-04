@@ -68,13 +68,13 @@ export const Convert = () => {
             <div className="flex flex-col gap-4 items-center justify-center">
               <div className="title flex items-center gap-2 mb-4">
                 <i className="fa-solid fa-headphones"></i>
-                <h1 className="text-3xl font-bold text-center">
+                <h1 className="md:text-3xl text-lg font-bold text-center">
                   {result.title}
                 </h1>
               </div>
-              <div className="click flex gap-7">
+              <div className="click flex flex-col md:flex-row md:gap-7 gap-4">
                 <button
-                  className="descargar flex items-center gap-2 bg-green-600 text-white py-4 px-4 rounded"
+                  className="descargar flex items-center justify-center gap-2 bg-green-600 text-white py-4 px-4 rounded"
                   onClick={() => window.open(result.link, "_blank")}
                 >
                   <svg
@@ -94,7 +94,7 @@ export const Convert = () => {
                   Descargar
                 </button>
                 <button
-                  className="buttonback flex items-center gap-2 bg-red-600 text-white py-4 px-4 rounded"
+                  className="buttonback flex items-center justify-center gap-2 bg-red-600 text-white py-4 px-4 rounded"
                   onClick={() => window.location.reload()}
                 >
                   <svg
@@ -118,28 +118,30 @@ export const Convert = () => {
           </div>
         ) : (
           <>
-            <h1 className="font-bold text-[50px]">
+            <h1 className="font-bold md:text-[50px] text-[30px]">
               Convertidor de YouTube a MP3
             </h1>
-            <div className="flex items-center justify-center w-auto h-[65px] border-2 border-red-600 rounded-lg">
+            <div className="flex items-center justify-center flex-col md:flex-row w-auto md:h-[65px] md:border-2 md:border-red-600 px-5 md:px-0 rounded-lg">
               <input
                 placeholder="Ingresa la URL del video de YouTube"
                 type="text"
-                className="text-black font-medium h-full w-full rounded-l px-5 outline-none"
+                className="text-black md:font-medium text-[13px] w-full h-[55px] md:h-full rounded-t md:rounded-l md:rounded-tr-none px-5 outline-none"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
               />
               <button
-                className="w-[200px] h-full bg-red-600 rounded-r"
+                className="md:w-[200px] w-full md:h-full h-[55px] bg-red-600 md:rounded-r rounded-b md:rounded-bl-none text-white font-medium hover:bg-red-700 duration-300"
                 onClick={handleConvert}
               >
                 Convertir
               </button>
             </div>
             {error && (
-              <p className="error text-lg font-medium text-red-600">{error}</p>
+              <p className="error md:text-lg text-sm font-medium text-red-600">
+                {error}
+              </p>
             )}
-            <p className="text-lg font-medium">
+            <p className="md:text-lg text-sm font-medium">
               Introduzca la URL del video de YouTube que desea convertir a MP3.
             </p>
           </>
