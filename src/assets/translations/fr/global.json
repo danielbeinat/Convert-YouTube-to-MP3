@@ -47,5 +47,9 @@
       "description": "Téléchargez vos vidéos YouTube converties en MP3 en quelques secondes ! Profitez d'une conversion rapide et sans complications.",
       "image": "../../ToolConvert/fast.svg"
     }
-  ]
+  ],
+
+  "footer": {
+    "description": "MP3Linker. Tous droits réservés."
+  }
 }
