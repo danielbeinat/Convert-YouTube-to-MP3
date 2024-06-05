@@ -1,0 +1,52 @@
+{
+  "header": {
+    "Inicio": "Inizio",
+    "FAQ": "FAQ"
+  },
+
+  "convert": {
+    "title": "Convertitore di YouTube a MP3",
+    "placeholder": "Inserisci l'URL del video di YouTube",
+    "convert": "Converti",
+    "error": {
+      "url": "Per favore, inserisci un URL valido",
+      "invalidVideo": "Errore durante l'ottenimento del video. Per favore, verifica l'URL.",
+      "api": "Errore durante l'ottenimento del video. Per favore, verifica l'URL."
+    },
+    "description": "Inserisci l'URL del video di YouTube che vuoi convertire in MP3.",
+    "download": "Scarica",
+    "back": "Torna alla conversione"
+  },
+
+  "tool": {
+    "title": "Convertitore YouTube MP3Linker",
+    "description": "Benvenuto nel nostro eccezionale convertitore da YouTube a MP3! Vuoi goderti la tua musica preferita in qualsiasi momento e ovunque? Sei nel posto giusto! La nostra piattaforma offre un'esperienza di conversione di prima classe che unisce efficienza, facilità d'uso e qualità incomparabile."
+  },
+
+  "card": [
+    {
+      "id": 1,
+      "title": "Multipiattaforma",
+      "description": "Il nostro convertitore da YouTube a MP3 funziona perfettamente su Linux, Windows e MacOS ed è compatibile con tutti i browser.",
+      "image": "../../ToolConvert/responsive.svg"
+    },
+    {
+      "id": 2,
+      "title": "Download gratuito",
+      "description": "MP3Linker è sempre gratuito e puoi convertire e scaricare video e audio illimitati. Usa questa conversione tutte le volte che vuoi, senza compromessi sulla qualità.",
+      "image": "../../ToolConvert/download.svg"
+    },
+    {
+      "id": 3,
+      "title": "Facile da usare",
+      "description": "Non è necessario registrare un account. Tutto quello che devi fare è inserire l'URL del video che vuoi convertire e scaricare. Seleziona il formato, quindi fai clic su Scarica per avviare questo processo di conversione.",
+      "image": "../../ToolConvert/like.svg"
+    },
+    {
+      "id": 4,
+      "title": "Velocità di download",
+      "description": "Scarica i tuoi video di YouTube convertiti in MP3 in pochi secondi! Goditi una conversione veloce e senza problemi.",
+      "image": "../../ToolConvert/fast.svg"
+    }
+  ]
+}

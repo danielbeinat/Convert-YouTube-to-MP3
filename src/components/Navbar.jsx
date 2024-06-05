@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import spain from "../assets/flag/spain.svg";
 import headphones from "../assets/headphones.svg";
 import { flags } from "../assets/flag/flags";
+import { useTranslation } from "react-i18next";
 
 const link = [
   { name: "Inicio", href: "#" },
@@ -9,8 +10,13 @@ const link = [
 ];
 
 export const Navbar = () => {
+  const { t, i18n } = useTranslation("global");
   const [show, setShow] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +53,7 @@ export const Navbar = () => {
                   href={item.href}
                   className="text-white text-lg hover:text-red-500 duration-300"
                 >
-                  {item.name}
+                  {t(`header.${item.name}`)}
                 </a>
               </li>
             ))}
@@ -56,21 +62,23 @@ export const Navbar = () => {
 
         <button
           onClick={() => setShow(!show)}
-          className="bg-white rounded px-2 py-1"
+          className="bg-gray-200 rounded px-2 py-1"
         >
-          <img className="w-6 h-6" src={spain} alt="" />
+          <img className="w-6 h-6" src={spain} alt="flag" />
         </button>
 
         {show && (
           <div className="fixed flex flex-col bg-white items-start justify-start border-2 rounded md:top-[50px] md:right-10 top-[50px] right-3 z-10">
             {flags.map((item) => (
-              <div
-                className="flex items-center cursor-pointer hover:bg-red-500 hover:text-white w-full px-2 py-2 duration-300 gap-2"
+              <button
+                className="flex items-center cursor-pointer hover:bg-gray-300 w-full px-2 py-2 duration-300 gap-2"
                 key={item.id}
+                onClick={() => changeLanguage(item.lng)}
+                type="submit"
               >
                 <img className="w-6 h-6" src={item.image} alt={item.name} />
                 <span>{item.name}</span>
-              </div>
+              </button>
             ))}
           </div>
         )}

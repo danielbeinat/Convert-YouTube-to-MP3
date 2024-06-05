@@ -1,0 +1,52 @@
+{
+  "header": {
+    "Inicio": "Início",
+    "FAQ": "FAQ"
+  },
+
+  "convert": {
+    "title": "Conversor de YouTube para MP3",
+    "placeholder": "Insira o URL do vídeo do YouTube",
+    "convert": "Converter",
+    "error": {
+      "url": "Por favor, insira uma URL válida",
+      "invalidVideo": "Erro ao obter o video. Por favor, verifique a URL.",
+      "api": "Erro ao obter o video. Por favor, verifique a URL."
+    },
+    "description": "Insira o URL do vídeo do YouTube que você deseja converter para MP3.",
+    "download": "Baixar",
+    "back": "Converter novamente"
+  },
+
+  "tool": {
+    "title": "MP3Linker Conversor do YouTube",
+    "description": "Bem-vindo ao nosso excepcional conversor do YouTube para MP3! Quer curtir sua música favorita a qualquer momento e em qualquer lugar? Você está no lugar certo! Nossa plataforma oferece uma experiência de conversão de primeira classe que combina eficiência, facilidade de uso e qualidade incomparável."
+  },
+
+  "card": [
+    {
+      "id": 1,
+      "title": "Multiplataforma",
+      "description": "Nosso conversor de vídeos do YouTube para MP3 funciona perfeitamente no Linux, Windows e MacOS e é compatível com todos os navegadores.",
+      "image": "../../ToolConvert/responsive.svg"
+    },
+    {
+      "id": 2,
+      "title": "Download gratuito",
+      "description": "O MP3Linker é sempre gratuito e você pode converter e baixar vídeos e áudios ilimitados. Use esta conversão quantas vezes quiser, sem comprometer a qualidade.",
+      "image": "../../ToolConvert/download.svg"
+    },
+    {
+      "id": 3,
+      "title": "Fácil de usar",
+      "description": "Não é necessário registrar uma conta. Basta inserir o URL do vídeo que deseja converter e baixar. Selecione o formato e, em seguida, clique em Baixar para iniciar esse processo de conversão.",
+      "image": "../../ToolConvert/like.svg"
+    },
+    {
+      "id": 4,
+      "title": "Velocidade de download",
+      "description": "Baixe seus vídeos do YouTube convertidos para MP3 em segundos! Aproveite uma conversão rápida e sem complicações.",
+      "image": "../../ToolConvert/fast.svg"
+    }
+  ]
+}

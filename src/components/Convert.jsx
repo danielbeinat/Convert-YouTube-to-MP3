@@ -1,15 +1,18 @@
 import React, { useState } from "react";
 import background2 from "../assets/background2.png";
 const { VITE_APP_RAPIDAPI_KEY } = import.meta.env;
+import { useTranslation } from "react-i18next";
 
 export const Convert = () => {
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
+  const { t, i18n } = useTranslation("global");
 
   const handleConvert = async () => {
     if (url === "" || url.length < 43) {
-      setError("Please enter a URL");
+      setError(t("convert.error.url"));
+
       return;
     } else {
       setError("");
@@ -23,7 +26,8 @@ export const Convert = () => {
     const videoId = searchParams.get("v");
 
     if (!videoId) {
-      setError("Error al obtener el video. Por favor, verifica la URL.");
+      setError(t("convert.error.invalidVideo"));
+
       return;
     }
 
@@ -50,7 +54,7 @@ export const Convert = () => {
       setResult(result);
     } catch (error) {
       console.error("Error en la solicitud:", error.message);
-      setError("Error al obtener el video. Por favor, verifica la URL.");
+      setError(t("convert.error.api"));
     }
   };
 
@@ -91,7 +95,7 @@ export const Convert = () => {
                       d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
                     />
                   </svg>
-                  Descargar
+                  {t("convert.download")}
                 </button>
                 <button
                   className="buttonback flex items-center justify-center gap-2 bg-red-600 text-white py-4 px-4 rounded"
@@ -111,7 +115,7 @@ export const Convert = () => {
                       d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
                     />
                   </svg>
-                  Volver a convertir
+                  {t("convert.back")}
                 </button>
               </div>
             </div>
@@ -119,21 +123,22 @@ export const Convert = () => {
         ) : (
           <>
             <h1 className="font-bold md:text-[50px] text-[30px]">
-              Convertidor de YouTube a MP3
+              {t("convert.title")}
             </h1>
             <div className="flex items-center justify-center flex-col md:flex-row w-auto md:h-[65px] md:border-2 md:border-red-600 px-5 md:px-0 rounded-lg">
               <input
-                placeholder="Ingresa la URL del video de YouTube"
+                placeholder={t("convert.placeholder")}
                 type="text"
                 className="text-black md:font-medium text-[13px] md:text-[16px]  w-full h-[55px] md:h-full rounded-t md:rounded-l md:rounded-tr-none px-5 outline-none"
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleConvert()}
               />
               <button
                 className="md:w-[200px] w-full md:h-full h-[55px] bg-red-600 md:rounded-r rounded-b md:rounded-bl-none text-white font-medium hover:bg-red-700 duration-300"
                 onClick={handleConvert}
               >
-                Convertir
+                {t("convert.convert")}
               </button>
             </div>
             {error && (
@@ -142,7 +147,7 @@ export const Convert = () => {
               </p>
             )}
             <p className="md:text-lg text-sm font-medium">
-              Introduzca la URL del video de YouTube que desea convertir a MP3.
+              {t("convert.description")}
             </p>
           </>
         )}

@@ -8,11 +8,11 @@ import portugal from "./portugal.svg";
 
 export const flags = [
 
-    { id: 1, name: "DE", image: germany },
-    { id: 2, name: "EN", image: englad },
-    { id: 3, name: "IT", image: italy },
-    { id: 4, name: "ES", image: spain },
-    { id: 5, name: "FR", image: france },
-    { id: 6, name: "PO", image: portugal },
+    { id: 1, name: "DE", image: germany, lng: "de" },
+    { id: 2, name: "EN", image: englad, lng: "en" },
+    { id: 3, name: "IT", image: italy, lng: "it" },
+    { id: 4, name: "ES", image: spain, lng: "es" },
+    { id: 5, name: "FR", image: france, lng: "fr" },
+    { id: 6, name: "PO", image: portugal, lng: "po" },
 
 ]

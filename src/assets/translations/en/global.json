@@ -1,0 +1,52 @@
+{
+  "header": {
+    "Inicio": "Home",
+    "FAQ": "FAQ"
+  },
+
+  "convert": {
+    "title": "YouTube to MP3 Converter",
+    "placeholder": "Enter the YouTube video URL",
+    "convert": "Convert",
+    "error": {
+      "url": "Please enter a valid URL",
+      "invalidVideo": "Error getting the video. Please verify the URL.",
+      "api": "Error getting the video. Please verify the URL."
+    },
+    "description": "Enter the YouTube video URL that you want to convert to MP3.",
+    "download": "Download",
+    "back": "Back to convert"
+  },
+
+  "tool": {
+    "title": "MP3Linker YouTube Converter",
+    "description": "Welcome to our exceptional YouTube to MP3 converter! Want to enjoy your favorite music anytime, anywhere? You're in the right place! Our platform offers a first-class conversion experience that combines efficiency, ease of use, and unparalleled quality."
+  },
+
+  "card": [
+    {
+      "id": 1,
+      "title": "Cross-platform",
+      "description": "Our YouTube to MP3 video converter works perfectly on Linux, Windows, and MacOS, and is compatible with all browsers.",
+      "image": "../../ToolConvert/responsive.svg"
+    },
+    {
+      "id": 2,
+      "title": "Free Download",
+      "description": "MP3Linker is always free, and you can convert and download unlimited video and audio. Use this conversion as many times as you like, with no quality compromises.",
+      "image": "../../ToolConvert/download.svg"
+    },
+    {
+      "id": 3,
+      "title": "Easy to Use",
+      "description": "You don't need to register an account. All you need to do is enter the URL of the video you want to convert and download. Select the format, then click Download to start this conversion process.",
+      "image": "../../ToolConvert/like.svg"
+    },
+    {
+      "id": 4,
+      "title": "Download Speed",
+      "description": "Download your YouTube videos converted to MP3 in seconds! Enjoy a fast and hassle-free conversion.",
+      "image": "../../ToolConvert/fast.svg"
+    }
+  ]
+}
