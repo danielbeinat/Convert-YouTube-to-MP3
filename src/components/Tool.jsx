@@ -1,4 +1,3 @@
-// import { ToolConvert } from "../assets/ToolConvert/ToolConvert";
 import { useTranslation } from "react-i18next";
 
 import responsiveImage from "../assets/ToolConvert/responsive.svg";

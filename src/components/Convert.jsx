@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import background2 from "../assets/background2.png";
+import background2 from "../assets/background2.webp";
 const { VITE_APP_RAPIDAPI_KEY } = import.meta.env;
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +20,6 @@ export const Convert = () => {
 
     let link = url;
 
-    // Usa la URL para extraer el videoId
     const urlObj = new URL(link);
     const searchParams = new URLSearchParams(urlObj.search);
     const videoId = searchParams.get("v");
