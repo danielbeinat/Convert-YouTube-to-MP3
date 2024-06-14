@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import spainFlag from "../assets/flag/spain.svg"; // Renombrado para evitar confusión
+import spainFlag from "../assets/flag/spain.svg";
 import headphones from "../assets/headphones.svg";
 import { flags } from "../assets/flag/flags";
 import { useTranslation } from "react-i18next";
@@ -25,11 +25,11 @@ export const Navbar = () => {
   const { t, i18n } = useTranslation("global");
   const [show, setShow] = useState<boolean>(false);
   const [isTransparent, setIsTransparent] = useState<boolean>(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("es"); // Estado para almacenar el idioma seleccionado, predeterminado a español
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("es");
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    setSelectedLanguage(lng); // Actualizar el idioma seleccionado al cambiar el idioma
+    setSelectedLanguage(lng);
   };
 
   useEffect(() => {
