@@ -5,14 +5,25 @@ import downloadImage from "../assets/ToolConvert/download.svg";
 import likeImage from "../assets/ToolConvert/like.svg";
 import fastImage from "../assets/ToolConvert/fast.svg";
 
+interface Card {
+  id: number;
+  title: string;
+  description: string;
+  image: string | null;
+}
+
 export const Tool = () => {
-  const { t, i18n } = useTranslation("global");
-  const images = {
+  const { t } = useTranslation("global");
+
+  const images: Record<string, string> = {
     responsive: responsiveImage,
     download: downloadImage,
     like: likeImage,
     fast: fastImage,
   };
+
+  const cards: Card[] = t("card", { returnObjects: true });
+
   return (
     <>
       <section id="section2" className="font-poppins">
@@ -25,12 +36,12 @@ export const Tool = () => {
           </p>
         </div>
         <div className="grid md:grid-cols-2 grid-cols-1 gap-10 ">
-          {t("card", { returnObjects: true }).map((item) => {
+          {cards.map((item: Card) => {
             const itemWithImage = {
               ...item,
               image:
                 item.image && item.image.length > 0
-                  ? images[item.image.split("/").pop().split(".")[0]]
+                  ? images[item.image.split("/").pop()!.split(".")[0]]
                   : null,
             };
 

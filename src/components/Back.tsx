@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export const Back = () => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const toggleVisibility = () => {
     if (window.pageYOffset > 300) {

@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import background2 from "../assets/background2.webp";
 const { VITE_APP_RAPIDAPI_KEY } = import.meta.env;
 import { useTranslation } from "react-i18next";
 
+interface Result {
+  title: string;
+  link: string;
+}
+
 export const Convert = () => {
-  const [url, setUrl] = useState("");
-  const [error, setError] = useState("");
-  const [result, setResult] = useState(null);
+  const [url, setUrl] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [result, setResult] = useState<Result | null>(null);
   const { t, i18n } = useTranslation("global");
 
   const handleConvert = async () => {
@@ -51,7 +56,7 @@ export const Convert = () => {
 
       const result = await response.json();
       setResult(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error en la solicitud:", error.message);
       setError(t("convert.error.api"));
     }
