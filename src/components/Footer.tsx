@@ -15,12 +15,6 @@ export const Footer = () => {
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 backdrop-blur-xl border border-white/10">
               <Headphones className="w-6 h-6 text-violet-400" />
             </div>
-
-            <div className="space-y-2">
-              <p className="text-sm text-gray-400 max-w-md">
-                {t("footer.description")}
-              </p>
-            </div>
           </div>
 
           <div className="my-8">
@@ -28,7 +22,9 @@ export const Footer = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-            <p>© {currentYear} Your Brand. All rights reserved.</p>
+            <p>
+              © {currentYear} {t("footer.description")}
+            </p>
 
             <div className="flex items-center gap-2">
               <span className="relative flex h-2 w-2">
