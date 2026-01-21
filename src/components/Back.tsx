@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ChevronUp } from "lucide-react";
 
 export const Back = () => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -26,26 +27,14 @@ export const Back = () => {
   }, []);
 
   return (
-    <div className="fixed bottom-0 right-0 p-4">
+    <div className="fixed bottom-8 right-8 z-50">
       {isVisible && (
         <button
-          className="bg-gray-800 border-2 border-gray-700 shadow shadow-gray-700 hover:bg-gray-700 text-white rounded-full w-10 h-10 flex items-center justify-center"
+          className="group relative bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 before:absolute before:inset-0 before:bg-gradient-to-r before:from-purple-500 before:to-purple-600 before:rounded-full before:blur-md before:opacity-0 group-hover:before:opacity-50 before:transition-opacity before:duration-300"
           onClick={scrollToTop}
+          aria-label="Scroll to top"
         >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M5 10l7-7m0 0l7 7m-7-7v18"
-            ></path>
-          </svg>
+          <ChevronUp className="w-6 h-6 transform transition-transform duration-300 group-hover:translate-y-[-2px]" />
         </button>
       )}
     </div>

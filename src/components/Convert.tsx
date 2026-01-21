@@ -2,38 +2,77 @@ import { useState } from "react";
 const { VITE_APP_RAPIDAPI_KEY } = import.meta.env;
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { ConversionResult, ValidationError } from "../types";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { ConversionHistory } from "../types";
+import {
+  Download,
+  RotateCcw,
+  Music,
+  Play,
+  Clock,
+  AlertCircle,
+  AlertTriangle,
+  TriangleAlert,
+  RefreshCw,
+} from "lucide-react";
 
-interface Result {
-  title: string;
-  link: string;
-}
+const YOUTUBE_URL_REGEX =
+  /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/;
+
+const validateYouTubeUrl = (
+  url: string,
+): { isValid: boolean; videoId?: string; error?: ValidationError } => {
+  if (!url || url.trim() === "") {
+    return {
+      isValid: false,
+      error: { type: "url", message: "Por favor, ingrese una URL" },
+    };
+  }
+
+  const match = url.match(YOUTUBE_URL_REGEX);
+  if (!match) {
+    return {
+      isValid: false,
+      error: { type: "url", message: "URL de YouTube no válida" },
+    };
+  }
+
+  const videoId = match[4];
+  if (!videoId) {
+    return {
+      isValid: false,
+      error: {
+        type: "invalidVideo",
+        message: "No se pudo extraer el ID del video",
+      },
+    };
+  }
+
+  return { isValid: true, videoId };
+};
 
 export const Convert = () => {
   const [url, setUrl] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [result, setResult] = useState<Result | null>(null);
+  const [error, setError] = useState<ValidationError | null>(null);
+  const [result, setResult] = useState<ConversionResult | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [history, setHistory] = useLocalStorage<ConversionHistory[]>(
+    "conversion-history",
+    [],
+  );
   const { t, i18n } = useTranslation("global");
 
   const handleConvert = async () => {
-    if (url === "" || url.length < 43) {
-      setError(t("convert.error.url"));
-      return;
-    } else {
-      setError("");
-    }
+    setError(null);
 
-    let link = url;
-
-    const urlObj = new URL(link);
-    const searchParams = new URLSearchParams(urlObj.search);
-    const videoId = searchParams.get("v");
-
-    if (!videoId) {
-      setError(t("convert.error.invalidVideo"));
+    const validation = validateYouTubeUrl(url);
+    if (!validation.isValid) {
+      setError(validation.error!);
       return;
     }
 
+    const { videoId } = validation;
     const apiUrl = `https://youtube-mp36.p.rapidapi.com/dl?id=${videoId}`;
 
     const options = {
@@ -51,22 +90,66 @@ export const Convert = () => {
 
       if (!response.ok) {
         throw new Error(
-          `Error al obtener el video. Código: ${response.status}`
+          `Error al obtener el video. Código: ${response.status}`,
         );
       }
 
       const result = await response.json();
+
+      if (!result.link) {
+        throw new Error("notFound");
+      }
+
       setResult(result);
+
+      // Add to history
+      const historyItem: ConversionHistory = {
+        id: Date.now().toString(),
+        title: result.title,
+        url: url,
+        timestamp: Date.now(),
+        downloadLink: result.link,
+      };
+      setHistory((prev) => [historyItem, ...prev].slice(0, 10)); // Keep only last 10 items
     } catch (error: any) {
       console.error("Error en la solicitud:", error.message);
-      setError(t("convert.error.api"));
+
+      let errorType: ValidationError["type"] = "api";
+      let errorMessage = "Error al procesar la solicitud";
+
+      switch (error.message) {
+        case "rateLimit":
+          errorType = "rateLimit";
+          errorMessage = "Límite de solicitudes alcanzado. Intenta más tarde.";
+          break;
+        case "notFound":
+          errorType = "notFound";
+          errorMessage = "Video no encontrado o no disponible.";
+          break;
+        case "network":
+          errorType = "network";
+          errorMessage = "Error de conexión. Verifica tu internet.";
+          break;
+        default:
+          errorType = "api";
+          errorMessage = "Error del servicio. Intenta más tarde.";
+      }
+
+      setError({ type: errorType, message: errorMessage });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="relative font-poppins min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-purple-900 to-gray-900">
+    <div className="relative font-poppins min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-4000"></div>
+      </div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,58 +161,37 @@ export const Convert = () => {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="bg-white bg-opacity-10 backdrop-blur-md rounded-xl p-8 shadow-2xl"
+            className="bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-white/20"
           >
             <div className="flex flex-col gap-6 items-center justify-center">
               <div className="flex items-center gap-3 mb-4">
-                <i className="fa-solid fa-headphones text-2xl text-purple-400"></i>
-                <h1 className="text-2xl md:text-3xl font-bold text-center">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full flex items-center justify-center">
+                  <Music className="w-6 h-6 text-white" />
+                </div>
+                <h1 className="text-2xl md:text-3xl font-bold text-center bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">
                   {result.title}
                 </h1>
               </div>
-              <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex flex-col md:flex-row gap-4 w-full max-w-md">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white py-3 px-6 rounded-full transition duration-300 ease-in-out transform"
+                  className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-3 px-6 rounded-full transition duration-300 ease-in-out transform shadow-lg"
                   onClick={() => window.open(result.link, "_blank")}
+                  aria-label={`Descargar ${result.title}`}
+                  rel="noopener noreferrer"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
-                    />
-                  </svg>
+                  <Download className="w-5 h-5" />
                   {t("convert.download")}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white py-3 px-6 rounded-full transition duration-300 ease-in-out transform"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white py-3 px-6 rounded-full transition duration-300 ease-in-out transform border border-white/30"
                   onClick={() => window.location.reload()}
+                  aria-label="Convertir otro video"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2}
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                    />
-                  </svg>
+                  <RotateCcw className="w-5 h-5" />
                   {t("convert.back")}
                 </motion.button>
               </div>
@@ -142,25 +204,50 @@ export const Convert = () => {
             transition={{ duration: 0.5 }}
             className="flex flex-col items-center gap-8"
           >
-            <h1 className="font-bold text-4xl md:text-5xl text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
-              {t("convert.title")}
-            </h1>
+            <div className="text-center">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="w-20 h-20 bg-gradient-to-br from-purple-400 to-pink-400 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl"
+              >
+                <Music className="w-10 h-10 text-white" />
+              </motion.div>
+              <h1 className="font-bold text-4xl md:text-6xl text-center bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 bg-clip-text text-transparent mb-4">
+                {t("convert.title")}
+              </h1>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                Convierte tus videos favoritos de YouTube a MP3 con la mejor
+                calidad
+              </p>
+            </div>
+
             <div className="w-full max-w-2xl">
-              <div className="relative">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur-lg opacity-50 group-hover:opacity-75 transition duration-300"></div>
                 <input
                   placeholder={t("convert.placeholder")}
                   type="text"
-                  className="w-full h-14 px-5 pr-16 text-gray-700 bg-white bg-opacity-90 rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300 ease-in-out"
+                  className="relative w-full h-16 px-6 pr-20 text-gray-800 bg-white/95 backdrop-blur-sm rounded-full focus:outline-none focus:ring-4 focus:ring-purple-500/50 transition duration-300 ease-in-out shadow-2xl placeholder-gray-500"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleConvert()}
+                  aria-label="URL del video de YouTube"
+                  aria-invalid={
+                    error?.type === "url" || error?.type === "invalidVideo"
+                  }
+                  aria-describedby={error ? "error-message" : undefined}
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="absolute right-2 top-2 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-2 transition duration-300 ease-in-out"
+                  className="absolute right-2 top-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full p-3 transition duration-300 ease-in-out shadow-lg"
                   onClick={handleConvert}
                   disabled={isLoading}
+                  aria-label={
+                    isLoading ? "Convirtiendo video" : "Convertir video"
+                  }
+                  aria-busy={isLoading}
                 >
                   {isLoading ? (
                     <svg
@@ -184,50 +271,121 @@ export const Convert = () => {
                       ></path>
                     </svg>
                   ) : (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M14 5l7 7m0 0l-7 7m7-7H3"
-                      />
-                    </svg>
+                    <Play className="w-6 h-6" />
                   )}
                 </motion.button>
               </div>
             </div>
             {isLoading && (
-              <motion.div
-                className="w-full max-w-2xl bg-gray-700 h-2 rounded-full overflow-hidden"
-                initial={{ width: 0 }}
-                animate={{ width: "100%" }}
-                transition={{
-                  duration: 2,
-                  ease: "easeInOut",
-                  repeat: Infinity,
-                }}
-              >
-                <div className="h-full bg-gradient-to-r from-purple-400 to-purple-600"></div>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                <div className="bg-white/10 backdrop-blur-sm rounded-full p-4 border border-white/20">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <div className="w-8 h-8 border-3 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="absolute inset-0 w-8 h-8 border-3 border-pink-400 border-t-transparent rounded-full animate-spin animation-delay-150"></div>
+                    </div>
+                    <span className="text-white font-medium">
+                      Convirtiendo video...
+                    </span>
+                  </div>
+                  <div className="mt-3 bg-white/20 h-2 rounded-full overflow-hidden">
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-purple-400 to-pink-400"
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{
+                        duration: 3,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                      }}
+                    />
+                  </div>
+                </div>
               </motion.div>
             )}
             {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-red-400 font-medium text-center"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className={`p-6 rounded-2xl max-w-2xl w-full backdrop-blur-xl border ${
+                  error.type === "rateLimit"
+                    ? "bg-yellow-500/20 border-yellow-400/50"
+                    : error.type === "notFound"
+                      ? "bg-orange-500/20 border-orange-400/50"
+                      : "bg-red-500/20 border-red-400/50"
+                }`}
+                role="alert"
+                aria-live="polite"
+                id="error-message"
               >
-                {error}
-              </motion.p>
+                <div className="flex items-start gap-4">
+                  <div className="flex-shrink-0">
+                    {error.type === "rateLimit" && (
+                      <div className="w-12 h-12 bg-yellow-400/20 rounded-full flex items-center justify-center">
+                        <Clock className="w-6 h-6 text-yellow-400" />
+                      </div>
+                    )}
+                    {error.type === "notFound" && (
+                      <div className="w-12 h-12 bg-orange-400/20 rounded-full flex items-center justify-center">
+                        <AlertCircle className="w-6 h-6 text-orange-400" />
+                      </div>
+                    )}
+                    {(error.type === "api" || error.type === "network") && (
+                      <div className="w-12 h-12 bg-red-400/20 rounded-full flex items-center justify-center">
+                        <TriangleAlert className="w-6 h-6 text-red-400" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold text-lg mb-1">
+                      {error.type === "rateLimit"
+                        ? "Límite alcanzado"
+                        : error.type === "notFound"
+                          ? "Video no encontrado"
+                          : "Error de conversión"}
+                    </h3>
+                    <p className="text-gray-300">{error.message}</p>
+                  </div>
+                </div>
+              </motion.div>
             )}
-            <p className="text-lg text-center text-gray-300 max-w-2xl">
-              {t("convert.description")}
-            </p>
+            <div className="mt-8 text-center">
+              <p className="text-lg text-gray-300 max-w-2xl">
+                {t("convert.description")}
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm text-gray-400">
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
+                  </svg>
+                  <span>Soporta todos los formatos</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M13 2.05v3.03c3.39.49 6 3.39 6 6.92 0 .9-.18 1.75-.48 2.54l2.6 1.53c.56-1.24.88-2.62.88-4.07 0-5.18-3.95-9.45-9-9.95zM12 19c-3.87 0-7-3.13-7-7 0-3.53 2.61-6.43 6-6.92V2.05c-5.06.5-9 4.76-9 9.95 0 5.52 4.47 10 9.99 10 3.31 0 6.24-1.61 8.06-4.09l-2.6-1.53C16.17 17.98 14.21 19 12 19z" />
+                  </svg>
+                  <span>Conversión rápida</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                  </svg>
+                  <span>100% seguro</span>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </motion.div>
