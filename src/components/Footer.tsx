@@ -50,14 +50,6 @@ export const Footer = () => {
                 </span>
                 <span className="text-sm text-gray-300">Always online</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <Heart className="w-4 h-4 text-red-500 animate-pulse" />
-                <span className="text-sm text-gray-400">Made with</span>
-                <span className="text-sm font-medium text-violet-400">
-                  passion
-                </span>
-              </div>
             </div>
           </div>
         </div>
